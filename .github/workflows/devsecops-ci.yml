@@ -31,3 +31,23 @@ jobs:
 
       - name: Build Application
         run: pnpm exec turbo run build --filter=@tabler/preview...
+
+  sast:
+    name: SAST - Semgrep Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Set Up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Semgrep
+        run: python -m pip install semgrep
+
+      - name: Run SAST Scan
+        run: semgrep scan --config auto
+
