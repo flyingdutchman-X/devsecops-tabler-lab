@@ -71,7 +71,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run Dependency Audit
-        continue-on-error: true
         run: pnpm audit --audit-level high
 
   secrets_scan:
@@ -89,4 +88,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_ENABLE_COMMENTS: "false"
+
+  trivy:
+    name: Trivy Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Scan Repository
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: '0'
 
